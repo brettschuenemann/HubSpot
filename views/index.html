@@ -4,7 +4,7 @@
 <head>
  
 <meta charset="UTF-8">
-<title>PW Zendesk Integration</title>
+<title>PW Hubspot Integration</title>
 
 <!--3rd-party Styles: mdlite, material icons, roboto font-->
 <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
@@ -25,17 +25,17 @@
 
 <body>
 
-<div id="zenTicketsList">
-<!-- 
-	<div class="demo-card-square mdl-card mdl-shadow--2dp" id="zenTicketsList" >
+<div id="hubspotContactsList">
+
+	<div class="demo-card-square mdl-card mdl-shadow--2dp">
 		<div class="mdl-card__title mdl-card__title-sane" >
-			<h2 class="mdl-card__title-text mdl-card__title-text-sane">Zendesk Tickets&nbsp;<span v-if="items">({{items.length}})</span></h2>
+			<h2 class="mdl-card__title-text mdl-card__title-text-sane">Hubspot Contacts&nbsp;<span v-if="items">({{items.length}})</span></h2>
 			<div class="mdl-layout-spacer"></div>
-    		<i class="material-icons material-icons-sane"><a target="_blank" v-bind:href="newTicketUrl">add</a></i>
+    		<!--<i class="material-icons material-icons-sane"><a target="_blank" v-bind:href="newTicketUrl">add</a></i>-->
 		</div>
 		<div class="mdl-card__supporting-text mdl-card__supporting-text-nopadding">
 			<div class="mdl-card__supporting-text mdl-list__item-primary-content-sane" v-if="status === 'new'">
-				<div>Fetching your Zendesk Tickets</div>
+				<div>Fetching your Hubspot Contacts</div>
 				<div></div>
 				<div>This may take a moment.</div>
 				<div id="p2" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
@@ -43,38 +43,27 @@
 			<ul class="mdl-list mdl-list-sane" v-else-if="status === 'success' && items.length">
 				<li style="height:initial;" class="mdl-list__item mdl-list__item--three-line mdl-list__item--three-line-sane" v-for="(item, index) in items" v-if="index<4">
 					<span style="height:initial; max-height:52px;" class="mdl-list__item-primary-content mdl-list__item-primary-content-sane">
-						<i class="material-icons mdl-list__item-avatar mdl-list__item-avatar-sane">forum</i>
+						<i class="material-icons mdl-list__item-avatar mdl-list__item-avatar-sane">person</i>
 
 					    <span>
-					    	<a :href="item.url" target="_blank">{{item.subject}}</a>
+					    	<a :href="item.url" target="_blank">{{item.name}}</a>
 					    	<!--<span class="material-icons material-icons-sane-small">info</span>-->
 					    </span>
 					    <div class="mdl-list-item-second-line">{{item.created}} |  
-					    <span class="mdl-chip mdl-chip-sane" 
-					    	  :class="{
-					    	  statusNew : (item.status == 'new'),
-					    	  statusOpen : (item.status == 'open'),
-					    	  statusPending : (item.status == 'pending'),
-					    	  statusOnHold : (item.status == 'on-hold'),
-					    	  statusSolved : (item.status == 'solved')
-					   		}"
-					    >
-    						<span class="mdl-chip__text mdl-chip__text-sane">{{item.status}}</span>
-						</span>
-						<span v-if="item.type" style="text-transform: capitalize;">{{item.type}}</span>
-						<span v-if="item.ticketId">#{{item.ticketId}}</span>
-						<span v-if="item.priority">({{item.priority}})</span>
+						<span v-if="item.lifecyclestage" style="text-transform: capitalize;">{{item.lifecyclestage}}</span>
+						<!--<span v-if="item.ticketId">#{{item.ticketId}}</span>
+						<span v-if="item.priority">({{item.priority}})</span>-->
 						</div>
 					</span>
 				</li>
-				<li style="height:initial;" class="mdl-list__item mdl-list__item--three-line mdl-list__item--three-line-sane" v-if="items.length > 4">
-					<span style="height:initial; max-height:52px; text-align:right;" class="mdl-list__item-primary-content mdl-list__item-primary-content-sane">
-						<a target="_blank" :href="'https://d3v-prosperworksdev.zendesk.com/agent/users/' + user + '/'">> View All Tickets ({{items.length}})</a>
+				<li class="mdl-list__item mdl-list__item--three-line mdl-list__item--three-line-sane" v-if="items.length > 4">
+					<span class="mdl-list__item-primary-content mdl-list__item-primary-content-sane">
+						<a target="_blank" :href="'https://d3v-prosperworksdev.zendesk.com/agent/users/' + user + '/'">> View All Contacts ({{items.length}})</a>
 					</span>
 				</li>
 			</ul>
 			<div class="mdl-card__supporting-text mdl-list__item-primary-content-sane" v-else-if="status === 'success'">
-				<span>There are no tickets to display</span>
+				<span>There are no contacts to display</span>
 			</div>
 			<div class="mdl-card__supporting-text" v-else-if="status === 'error'">
 				<span>ERROR: There has been an error retrieving the Zendesk Tickets</span>

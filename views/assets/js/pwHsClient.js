@@ -32,13 +32,13 @@
 			});
 		}
 
-		zenTicketsList = new Vue({
-			el: '#zenTicketsList',
+		hubspotContactsList = new Vue({
+			el: '#hubspotContactsList',
 			data: {
 			user: '',
 			items: [],
 			status: 'new',
-			newTicketUrl: 'https://d3v-prosperworksdev.zendesk.com/hc/en-us/requests/new'
+			newTicketUrl: ''
 			}
 		})
 
@@ -54,11 +54,14 @@
 				url: '/contactsbycompany',
 				success: function(result) {
 					console.log(result);
+					hubspotContactsList.status = 'success';
+					hubspotContactsList.items = [];
+					prepareHubspotContactsList(result);
 				},
 
 				error: function(result) {
 					console.log(result);
-					zenTicketsList.status = 'error';
+					hubspotContactsList.status = 'error';
 				}
 			});
 		}
@@ -71,12 +74,39 @@
 				url: '/contactsforcontact',
 				success: function(result) {
 					console.log(result);
+					hubspotContactsList.status = 'success';
+					hubspotContactsList.items = [];
+					prepareHubspotContactsList(result);
 				},
 
 				error: function(result) {
 					console.log(result);
-					zenTicketsList.status = 'error';
+					hubspotContactsList.status = 'error';
 				}
+			});
+		}
+
+		function prepareHubspotContactsList(hubspotResult) {
+			$.each(hubspotResult, function(index){
+
+				var contactName  = hubspotResult[index].properties.firstname.value + ' ' + hubspotResult[index].properties.lastname.value;
+				var contactId = hubspotResult[index]['profile-token'];
+				var lifecycleStage = hubspotResult[index].properties.lifecyclestage.value;
+				var created = new Date();
+				created.setTime(hubspotResult[index].properties.createdate.value);
+				console.log(created);
+				var created_formatted = 
+					created.getMonth()+1 + '-' + 
+					created.getDate() + '-' + 
+					created.getFullYear();
+
+				hubspotContactsList.items.push({
+					contactId : contactId,
+					name : contactName,		
+					url : hubspotResult[index]['profile-url'],
+					lifecyclestage : lifecycleStage,
+					created : created_formatted	
+				});
 			});
 		}
 
