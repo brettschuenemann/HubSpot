@@ -3,6 +3,10 @@
 		domain : 'prosperworks.com'
 	};
 
+	var person = {
+		email : 'michael@dundermifflin.com'
+	};
+
 	var zenCard;
 
 	try {
@@ -16,9 +20,15 @@
 		if (pwSdkObj) {
 			pwSdkObj.setAppUI({height: 300	});
 			pwSdkObj.getContext().then(function(data) {
-				person.email = data.context.primary_email;
-				fetchZendeskTicketsByEmail(person);
-				console.log('CONTEXT OBJECT:' + data.context);
+				var entityType = data.context.entity_type;
+
+				if(entityType === 19) {
+					company.domain = data.context.email_domain;
+					fetchHubspotContactsByCompany(company);
+				} else if(entityType === 3) {
+					person.email = data.context.primary_email;
+					fetchHubspotContactsForContact(person);
+				}
 			});
 		}
 
@@ -43,7 +53,6 @@
 				data: company,
 				url: '/contactsbycompany',
 				success: function(result) {
-					debugger;
 					console.log(result);
 				},
 
@@ -53,7 +62,23 @@
 				}
 			});
 		}
-		//$("button").on("click", fetchZendeskTicketsByEmail(person.email));
+		
+		function fetchHubspotContactsForContact(person){
+			$.ajax({
+				type: 'GET',
+				dataType: 'json',
+				data: person,
+				url: '/contactsforcontact',
+				success: function(result) {
+					console.log(result);
+				},
+
+				error: function(result) {
+					console.log(result);
+					zenTicketsList.status = 'error';
+				}
+			});
+		}
 
 		if (!pwSdkObj) {
 			console.log('no context object...fetching tickets for default email:' + company.domain)

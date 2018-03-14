@@ -13,6 +13,10 @@ router.get("/",function(req,res){
   res.sendFile(path + "index.html");
 });
 
+router.get("/sidebar",function(req,res){
+  res.sendFile(path + "index.html");
+});
+
 router.get("/2",function(req,res){
   res.sendFile(path + "index2.html");
 });
@@ -35,6 +39,17 @@ router.get("/contactsbycompany", function(req, res) {
 			});
 		});
 	});
+});
+
+router.get("/contactsforcontact", function(req, res) {
+	var email = req.query.email;
+
+	hubspot.contacts.getByEmail(email, function(err, result) {
+		console.log('EMAIL: ' + email);
+		console.log('RESULT: ' + JSON.stringify(result));
+		res.send(result);
+	});
+
 });
 
 router.get("/hsinfo",function(req,res){
