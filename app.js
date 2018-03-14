@@ -5,7 +5,7 @@ var path = __dirname + '/views/';
 app.use(express.static('views/assets'));
 
 const Hubspot = require('hubspot');
-const hubspot = new Hubspot({ apiKey: '0274058e-bbc5-479f-9979-c1d603554cd1'});
+const hubspot = new Hubspot({ apiKey: '0274058e-bbc5-479f-9979-c1d603554cd1' });
 
 router.get("/",function(req,res){
   res.sendFile(path + "index.html");
