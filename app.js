@@ -4,8 +4,6 @@ var router = express.Router();
 var path = __dirname + '/views/';
 app.use(express.static('views/assets'));
 
-
-
 const Hubspot = require('hubspot');
 const hubspot = new Hubspot({ apiKey: '0274058e-bbc5-479f-9979-c1d603554cd1'});
 
@@ -13,7 +11,6 @@ router.get("/",function(req,res){
   res.sendFile(path + "index.html");
 });
 
-//REMOVE: Sidebar Hack
 router.get("/sidebar",function(req,res){
   res.sendFile(path + "index.html");
 });
@@ -40,6 +37,17 @@ router.get("/contactsbycompany", function(req, res) {
 			});
 		});
 	});
+});
+
+router.get("/contactsforcontact", function(req, res) {
+	var email = req.query.email;
+
+	hubspot.contacts.getByEmail(email, function(err, result) {
+		console.log('EMAIL: ' + email);
+		console.log('RESULT: ' + JSON.stringify(result));
+		res.send(result);
+	});
+
 });
 
 router.get("/hsinfo",function(req,res){
